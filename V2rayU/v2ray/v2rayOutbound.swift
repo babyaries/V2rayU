@@ -13,6 +13,7 @@ enum V2rayProtocolOutbound: String, Codable {
     case blackhole
     case freedom
     case shadowsocks
+    case trojan
     case socks
     case vmess
     case dns
@@ -30,6 +31,7 @@ struct V2rayOutbound: Codable {
     var settingBlackhole: V2rayOutboundBlackhole?
     var settingFreedom: V2rayOutboundFreedom?
     var settingShadowsocks: V2rayOutboundShadowsocks?
+    var settingTrojan: V2rayOutboundTrojan?
     var settingSocks: V2rayOutboundSocks?
     var settingVMess: V2rayOutboundVMess?
     var settingDns: V2rayOutboundDns?
@@ -84,6 +86,9 @@ extension V2rayOutbound {
         case .shadowsocks:
             settingShadowsocks = try container.decode(V2rayOutboundShadowsocks.self, forKey: CodingKeys.settings)
             break
+        case .trojan:
+            settingTrojan = try container.decode(V2rayOutboundTrojan.self, forKey: CodingKeys.settings)
+            break
         case .socks:
             settingSocks = try container.decode(V2rayOutboundSocks.self, forKey: CodingKeys.settings)
             break
@@ -128,6 +133,9 @@ extension V2rayOutbound {
         case .shadowsocks:
             try container.encode(self.settingShadowsocks, forKey: .settings)
             break
+        case .trojan:
+            try container.encode(self.settingTrojan, forKey: .settings)
+            break
         case .socks:
             try container.encode(self.settingSocks, forKey: .settings)
             break
@@ -170,6 +178,17 @@ struct V2rayOutboundFreedom: Codable {
     var domainStrategy: String = "AsIs"// UseIP | AsIs
     var redirect: String?
     var userLevel: Int = 0
+}
+
+struct V2rayOutboundTrojan: Codable {
+    var servers: [V2rayOutboundTrojanServer] = [V2rayOutboundTrojanServer()]
+}
+
+struct V2rayOutboundTrojanServer: Codable {
+    var address: String = ""
+    var port: Int = 443
+    var password: String = ""
+    var level: Int = 0
 }
 
 struct V2rayOutboundShadowsocks: Codable {

@@ -165,6 +165,19 @@ function commit() {
     git push
 }
 
+function downloadTrojan() {
+    echo "正在查询最新版trojan ..."
+    rm -fr v2ray-macos.zip v2ray-core
+    tag=$(curl --silent "https://api.github.com/repos/trojan-gfw/trojan/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    echo "trojan version: ${tag}"
+    url="https://github.com/trojan-gfw/trojan/releases/download/v${tag}/trojan-${tag}-macos.zip"
+    echo "正在下载最新版trojan: ${tag}"
+    curl -Lo trojan-macos.zip ${url}
+
+    unzip -o trojan-macos.zip -d trojan
+    rm -fr trojan-macos.zip
+}
+
 function downloadV2ray() {
     echo "正在查询最新版v2ray ..."
     rm -fr v2ray-macos.zip v2ray-core
@@ -214,6 +227,7 @@ function makeDmg() {
     rm -fr ${DMG_FINAL} ${V2rayU_RELEASE}
     updatePlistVersion
     downloadV2ray
+    downloadTrojan
     build
     createDmgByAppdmg
 }

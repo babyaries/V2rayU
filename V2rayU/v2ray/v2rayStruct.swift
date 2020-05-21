@@ -30,6 +30,7 @@ struct V2rayStruct: Codable {
 enum V2rayProtocolInbound: String, CaseIterable, Codable {
     case http
     case shadowsocks
+    case trojan
     case socks
     case vmess
 }

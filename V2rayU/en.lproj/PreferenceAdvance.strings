@@ -11,8 +11,8 @@
 /* Class = "NSTextFieldCell"; title = "Label"; ObjectID = "GyI-8o-VH6"; */
 "GyI-8o-VH6.title" = "Label";
 
-/* Class = "NSTextFieldCell"; placeholderString = " 1087"; ObjectID = "U2E-Gk-3e0"; */
-"U2E-Gk-3e0.placeholderString" = " 1087";
+/* Class = "NSTextFieldCell"; placeholderString = " 10809"; ObjectID = "U2E-Gk-3e0"; */
+"U2E-Gk-3e0.placeholderString" = " 10809";
 
 /* Class = "NSButtonCell"; title = "save settings"; ObjectID = "YJf-A4-mgF"; */
 "YJf-A4-mgF.title" = "save settings";
@@ -32,11 +32,11 @@
 /* Class = "NSTextFieldCell"; title = "Dns:"; ObjectID = "c7W-6e-soa"; */
 "c7W-6e-soa.title" = "Dns:";
 
-/* Class = "NSTextFieldCell"; placeholderString = " 1080"; ObjectID = "cEB-VU-kcL"; */
-"cEB-VU-kcL.placeholderString" = " 1080";
+/* Class = "NSTextFieldCell"; placeholderString = " 10808"; ObjectID = "cEB-VU-kcL"; */
+"cEB-VU-kcL.placeholderString" = " 10808";
 
-/* Class = "NSTextFieldCell"; placeholderString = " 1087"; ObjectID = "cs0-w0-4jp"; */
-"cs0-w0-4jp.placeholderString" = " 1087";
+/* Class = "NSTextFieldCell"; placeholderString = " 10809"; ObjectID = "cs0-w0-4jp"; */
+"cs0-w0-4jp.placeholderString" = " 10809";
 
 /* Class = "NSTextFieldCell"; title = "Local Sock Listen Port:"; ObjectID = "dy9-2h-EIe"; */
 "dy9-2h-EIe.title" = "Local Sock Listen Port:";

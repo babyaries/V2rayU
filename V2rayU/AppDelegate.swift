@@ -46,12 +46,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // check v2ray core
         V2rayCore().check()
+        // check trojan
+        Trojan().check()
+        
         // generate plist
         V2rayLaunch.generateLaunchAgentPlist()
         // auto check updates
         if UserDefaults.getBool(forKey: .autoCheckVersion) {
-            // check version
+            // check v2ray-core version
             V2rayUpdater.checkForUpdatesInBackground()
+            // check trojan version
+            TrojanUpdater.checkForUpdatesInBackground()
         }
 
         // start http server for pac
@@ -95,6 +100,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if UserDefaults.get(forKey: .v2rayCoreVersion) == nil {
             UserDefaults.set(forKey: .v2rayCoreVersion, value: V2rayCore.version)
         }
+        if UserDefaults.get(forKey: .trojanVersion) == nil {
+            UserDefaults.set(forKey: .trojanVersion, value: Trojan.version)
+        }
         if UserDefaults.get(forKey: .autoCheckVersion) == nil {
             UserDefaults.setBool(forKey: .autoCheckVersion, value: true)
         }
@@ -136,8 +144,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         V2rayCore().check()
         // auto check updates
         if UserDefaults.getBool(forKey: .autoCheckVersion) {
-            // check version
-            V2rayUpdater.checkForUpdatesInBackground()
+            // check v2ray-core version
+            V2rayUpdater.checkForUpdatesInBackground();
+            // check trojan version
+            TrojanUpdater.checkForUpdatesInBackground();
         }
         // auto update subscribe servers
         if UserDefaults.getBool(forKey: .autoUpdateServers) {

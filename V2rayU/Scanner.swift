@@ -55,6 +55,11 @@ class ShareUri {
             self.genShadowsocksUri()
             return
         }
+        
+        if v2ray.serverProtocol == V2rayProtocolOutbound.trojan.rawValue {
+            self.genTrojanUri()
+            return
+        }
 
         self.error = "not support"
     }
@@ -117,6 +122,17 @@ class ShareUri {
         self.uri = ss.encode()
         self.error = ss.error
     }
+    
+    // Trojan
+    func genTrojanUri(){
+        let trojan = TrojanUri()
+        trojan.host = self.v2ray.serverTrojan.address
+        trojan.port = self.v2ray.serverTrojan.port
+        trojan.password = self.v2ray.serverTrojan.password
+        trojan.remark = self.remark
+        self.uri = trojan.encode()
+        self.error = trojan.error
+    }
 }
 
 class ImportUri {
@@ -146,12 +162,16 @@ class ImportUri {
             let importUri = ImportUri()
             importUri.importSSRUri(uri: uri)
             return importUri
-        }
+        } else if uri.hasPrefix("trojan://") {
+           let importUri = ImportUri()
+           importUri.importTrojanUri(uri: uri)
+           return importUri
+       }
         return nil
     }
 
     static func supportProtocol(uri: String) -> Bool {
-        if uri.hasPrefix("ss://") || uri.hasPrefix("ssr://") || uri.hasPrefix("vmess://") {
+        if uri.hasPrefix("ss://") || uri.hasPrefix("ssr://") || uri.hasPrefix("trojan://") || uri.hasPrefix("vmess://") {
             return true
         }
         return false
@@ -192,6 +212,41 @@ class ImportUri {
         v2ray.serverShadowsocks = ssServer
         v2ray.enableMux = false
         v2ray.serverProtocol = V2rayProtocolOutbound.shadowsocks.rawValue
+        // check is valid
+        v2ray.checkManualValid()
+        if v2ray.isValid {
+            self.isValid = true
+            self.json = v2ray.combineManual()
+        } else {
+            self.error = v2ray.error
+            self.isValid = false
+        }
+    }
+    
+    func importTrojanUri(uri: String) {
+        if URL(string: uri) == nil {
+            self.error = "invalid trojan url"
+            return
+        }
+        self.uri = uri
+
+        let trojan = TrojanUri()
+        trojan.Init(url: URL(string: uri)!)
+        if trojan.error.count > 0 {
+            self.error = trojan.error
+            self.isValid = false
+            return
+        }
+        self.remark = trojan.remark
+
+        let v2ray = V2rayConfig()
+        var trojanServer = V2rayOutboundTrojanServer()
+        trojanServer.address = trojan.host
+        trojanServer.port = trojan.port
+        trojanServer.password = trojan.password
+        v2ray.serverTrojan = trojanServer
+        v2ray.enableMux = false
+        v2ray.serverProtocol = V2rayProtocolOutbound.trojan.rawValue
         // check is valid
         v2ray.checkManualValid()
         if v2ray.isValid {
@@ -505,6 +560,88 @@ class VmessUri {
         // type:伪装类型（none\http\srtp\utp\wechat-video）
         self.type = json["type"].stringValue
         print("json", json)
+    }
+}
+
+class TrojanUri {
+    var host: String = ""
+    var port: Int = 8379
+    var password: String = ""
+    var remark: String = ""
+
+    var error: String = ""
+
+    // trojan://password@192.168.100.1:8888#remark
+    func encode() -> String {
+        let base64 = self.password + "@" + self.host + ":" + String(self.port)
+        let trojan = base64.base64Encoded()
+        if trojan != nil {
+            return "trojan://" + trojan! + "#" + self.remark
+        }
+        self.error = "encode base64 fail"
+        return ""
+    }
+
+    func Init(url: URL) {
+        let (_decodedUrl, _tag) = self.decodeUrl(url: url)
+        guard let decodedUrl = _decodedUrl else {
+            self.error = "error: decodeUrl"
+            return
+        }
+        guard let parsedUrl = URLComponents(string: decodedUrl) else {
+            self.error = "error: parsedUrl"
+            return
+        }
+        
+        guard let host = parsedUrl.host else {
+            self.error = "error:missing host"
+            return
+        }
+        guard let port = parsedUrl.port else {
+            self.error = "error:missing port"
+            return
+        }
+        guard let password = parsedUrl.password else {
+            self.error = "error:missing password"
+            return
+        }
+
+        self.host = host
+        self.port = Int(port)
+        self.password = password
+
+        self.remark = _tag ?? ""
+    }
+
+    func decodeUrl(url: URL) -> (String?, String?) {
+        let urlStr = url.absoluteString
+        let base64Begin = urlStr.index(urlStr.startIndex, offsetBy: 9)
+        let base64End = urlStr.firstIndex(of: "#")
+        let encodedStr = String(urlStr[base64Begin..<(base64End ?? urlStr.endIndex)])
+
+        guard let decoded = encodedStr.base64Decoded() else {
+            self.error = "decode trojan error"
+            return (url.absoluteString, nil)
+        }
+
+        let s = decoded.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if let index = base64End {
+            let i = urlStr.index(index, offsetBy: 1)
+            let fragment = String(urlStr[i...]).removingPercentEncoding
+            return ("trojan://:\(s)", fragment)
+        }
+        return ("trojan://:\(s)", nil)
+    }
+
+    func padBase64(string: String) -> String {
+        var length = string.utf8.count
+        if length % 4 == 0 {
+            return string
+        } else {
+            length = 4 - length % 4 + length
+            return string.padding(toLength: length, withPad: "=", startingAt: 0)
+        }
     }
 }
 

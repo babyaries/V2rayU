@@ -185,8 +185,11 @@ class PingSpeed: NSObject {
             }
             host = cfg.serverSocks5.servers[0].address
             port = Int(cfg.serverSocks5.servers[0].port)
+        } else if cfg.serverProtocol == V2rayProtocolOutbound.trojan.rawValue {
+            host = cfg.serverTrojan.address
+            port = cfg.serverTrojan.port
         }
-
+        
         return host
     }
 }

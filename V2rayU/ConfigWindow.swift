@@ -42,6 +42,7 @@ class ConfigWindowController: NSWindowController, NSWindowDelegate, NSTabViewDel
     @IBOutlet weak var serverView: NSView!
     @IBOutlet weak var VmessView: NSView!
     @IBOutlet weak var ShadowsocksView: NSView!
+    @IBOutlet weak var TrojanView: NSView!
     @IBOutlet weak var SocksView: NSView!
 
     // vmess
@@ -57,6 +58,11 @@ class ConfigWindowController: NSWindowController, NSWindowDelegate, NSTabViewDel
     @IBOutlet weak var shadowsockPort: NSTextField!
     @IBOutlet weak var shadowsockPass: NSTextField!
     @IBOutlet weak var shadowsockMethod: NSPopUpButton!
+    
+    // trojan
+    @IBOutlet weak var trojanAddr: NSTextField!
+    @IBOutlet weak var trojanPort: NSTextField!
+    @IBOutlet weak var trojanPass: NSTextField!
 
     // socks5
     @IBOutlet weak var socks5Addr: NSTextField!
@@ -264,6 +270,11 @@ class ConfigWindowController: NSWindowController, NSWindowDelegate, NSTabViewDel
         if self.vmessSecurity.indexOfSelectedItem >= 0 {
             v2rayConfig.serverShadowsocks.method = self.shadowsockMethod.titleOfSelectedItem ?? "aes-256-cfb"
         }
+        
+        // trojan
+        v2rayConfig.serverTrojan.address = self.trojanAddr.stringValue
+        v2rayConfig.serverTrojan.port = Int(self.trojanPort.intValue)
+        v2rayConfig.serverTrojan.password = self.trojanPass.stringValue
 
         // socks5
         v2rayConfig.serverSocks5.servers[0].address = self.socks5Addr.stringValue
@@ -358,6 +369,13 @@ class ConfigWindowController: NSWindowController, NSWindowDelegate, NSTabViewDel
         self.shadowsockPass.stringValue = v2rayConfig.serverShadowsocks.password
         self.shadowsockMethod.selectItem(withTitle: v2rayConfig.serverShadowsocks.method)
 
+        // trojan
+        self.trojanAddr.stringValue = v2rayConfig.serverTrojan.address
+        if v2rayConfig.serverTrojan.port > 0 {
+            self.trojanPort.stringValue = String(v2rayConfig.serverTrojan.port)
+        }
+        self.trojanPass.stringValue = v2rayConfig.serverTrojan.password
+        
         // socks5
         self.socks5Addr.stringValue = v2rayConfig.serverSocks5.servers[0].address
         self.socks5Port.stringValue = String(v2rayConfig.serverSocks5.servers[0].port)
@@ -613,6 +631,9 @@ class ConfigWindowController: NSWindowController, NSWindowDelegate, NSTabViewDel
             break;
         case "shadowsocks":
             self.ShadowsocksView.isHidden = false
+            break;
+        case "trojan":
+            self.TrojanView.isHidden = false
             break;
         case "socks":
             self.SocksView.isHidden = false

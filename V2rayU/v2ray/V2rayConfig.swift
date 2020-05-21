@@ -61,6 +61,99 @@ let jsSourceFormatConfig =
 
 
         /**
+         * Trojan Config Format
+         * @return {string}
+         */
+        var TrojanConfigFormat = function (encodeTrojanStr, encodeDnsStr, encodeServerStr) {
+            var deTrojanStr = decodeURIComponent(encodeTrojanStr);
+            if (!deTrojanStr) {
+                return "error: cannot decode uri"
+            }
+
+            var server = {};
+            try {
+                server = JSON.parse(decodeURIComponent(encodeServerStr));
+            } catch (e) {
+                console.log("error", e);
+            }
+
+            var dns = {};
+            try {
+                dns = JSON.parse(decodeURIComponent(encodeDnsStr));
+            } catch (e) {
+                console.log("error", e);
+            }
+
+            try {
+                var obj = JSON.parse(deTrojanStr);
+                if (!obj) {
+                    return "error: cannot parse json"
+                }
+
+                var trojanConfig = {
+                    "run_type": "client",
+                    "local_addr": "127.0.0.1",
+                    "local_port": 1080,
+                    "remote_addr": "example.com",
+                    "remote_port": 443,
+                    "password": [],
+                    "log_level": 1,
+                    "ssl": {
+                        "verify": true,
+                        "verify_hostname": true,
+                        "cert": "",
+                        "cipher": "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA:AES128-SHA:AES256-SHA:DES-CBC3-SHA",
+                        "cipher_tls13": "TLS_AES_128_GCM_SHA256:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_256_GCM_SHA384",
+                        "sni": "",
+                        "alpn": [
+                            "h2",
+                            "http/1.1"
+                        ],
+                        "reuse_session": true,
+                        "session_ticket": false,
+                        "curves": ""
+                    },
+                    "tcp": {
+                        "no_delay": true,
+                        "keep_alive": true,
+                        "reuse_port": false,
+                        "fast_open": false,
+                        "fast_open_qlen": 20
+                    }
+                };
+
+
+                // ordered keys
+                trojanConfig["log"] = obj.log;
+                trojanConfig["inbounds"] = obj.inbounds;
+                // trojanConfig["inbound"] = obj.inbound;
+                // trojanConfig["inboundDetour"] = obj.inboundDetour;
+                trojanConfig["outbounds"] = obj.outbounds;
+                // trojanConfig["outbound"] = obj.outbound;
+                // trojanConfig["outboundDetour"] = obj.outboundDetour;
+                // trojanConfig["api"] = obj.api;
+                trojanConfig["dns"] = dns;
+                // trojanConfig["stats"] = obj.stats;
+                trojanConfig["routing"] = obj.routing;
+                // trojanConfig["policy"] = obj.policy;
+                // trojanConfig["reverse"] = obj.reverse;
+                trojanConfig["transport"] = obj.transport;
+
+
+                trojanConfig["local_port"] = obj.inbounds[0].port;
+                trojanConfig["remote_addr"] = server.address;
+                trojanConfig["remote_port"] = server.port;
+                trojanConfig["password"][0] = server.password;
+
+                return JSON.stringify(trojanConfig, null, 2);
+            } catch (e) {
+                console.log("error", e);
+                return "error: " + e.toString()
+            }
+        };
+
+
+        /**
          * json beauty Format
          * @return {string}
          */
@@ -103,9 +196,9 @@ class V2rayConfig: NSObject {
 
     // base
     var logLevel = "info"
-    var socksPort = "1080"
+    var socksPort = "10808"
     var socksHost = "127.0.0.1"
-    var httpPort = "1087"
+    var httpPort = "10809"
     var httpHost = "127.0.0.1"
     var enableUdp = true
     var enableMux = false
@@ -118,6 +211,7 @@ class V2rayConfig: NSObject {
     var serverVmess = V2rayOutboundVMessItem()
     var serverSocks5 = V2rayOutboundSocks()
     var serverShadowsocks = V2rayOutboundShadowsockServer()
+    var serverTrojan = V2rayOutboundTrojanServer()
 
     // transfor
     var streamNetwork = V2rayStreamSettings.network.tcp.rawValue
@@ -155,9 +249,9 @@ class V2rayConfig: NSObject {
         self.enableUdp = UserDefaults.getBool(forKey: .enableUdp)
         self.enableSniffing = UserDefaults.getBool(forKey: .enableSniffing)
 
-        self.httpPort = UserDefaults.get(forKey: .localHttpPort) ?? "1087"
+        self.httpPort = UserDefaults.get(forKey: .localHttpPort) ?? "10809"
         self.httpHost = UserDefaults.get(forKey: .localHttpHost) ?? "127.0.0.1"
-        self.socksPort = UserDefaults.get(forKey: .localSockPort) ?? "1080"
+        self.socksPort = UserDefaults.get(forKey: .localSockPort) ?? "10808"
         self.socksHost = UserDefaults.get(forKey: .localSockHost) ?? "127.0.0.1"
 
         self.mux = Int(UserDefaults.get(forKey: .muxConcurrent) ?? "8") ?? 8
@@ -178,10 +272,47 @@ class V2rayConfig: NSObject {
         // 1. encode to json text
         let encoder = JSONEncoder()
         let data = try! encoder.encode(self.v2ray)
-        var jsonStr = String(data: data, encoding: .utf8)!
-
-        // 2. format json text by javascript
-        jsonStr = self.formatJson(json: jsonStr)
+        
+        if self.serverProtocol == V2rayProtocolOutbound.trojan.rawValue {
+            UserDefaults.set(forKey: .currentApplication, value: "trojan")
+            var jsonStr = String(data: data, encoding: .utf8)!
+            let server = try! encoder.encode(self.serverTrojan)
+            let serverStr = String(data: server, encoding: .utf8)!
+            // 2. format json text by javascript
+            jsonStr = self.formatTrojanJson(json: jsonStr, server: serverStr)
+            return jsonStr
+        } else {
+            UserDefaults.set(forKey: .currentApplication, value: "v2ray-core")
+            var jsonStr = String(data: data, encoding: .utf8)!
+            // 2. format json text by javascript
+            jsonStr = self.formatJson(json: jsonStr)
+            return jsonStr
+        }
+    }
+    
+    func formatTrojanJson(json: String, server: String) -> String {
+        var jsonStr = json
+        let serverStr = server
+        if let context = JSContext() {
+            context.evaluateScript(jsSourceFormatConfig)
+            // call js func
+            if let formatFunction = context.objectForKeyedSubscript("TrojanConfigFormat") {
+                let escapedV2String = jsonStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+                let escapedDnsString = self.dnsJson.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+                let escapedServerString = serverStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+                if let result = formatFunction.call(withArguments: [escapedV2String as Any, escapedDnsString as Any, escapedServerString as Any]) {
+                    // error occurred with prefix "error:"
+                    if let reStr = result.toString(), reStr.count > 0 {
+                        if !reStr.hasPrefix("error:") {
+                            // replace json str
+                            jsonStr = reStr
+                        } else {
+                            self.error = reStr
+                        }
+                    }
+                }
+            }
+        }
 
         return jsonStr
     }
@@ -504,6 +635,14 @@ class V2rayConfig: NSObject {
             outbound.mux = mux
 
             break
+        case V2rayProtocolOutbound.trojan:
+            var trojan = outbound.settingTrojan
+            if trojan == nil {
+                trojan = V2rayOutboundTrojan()
+            }
+            trojan!.servers = [self.serverTrojan]
+            outbound.settingTrojan = trojan
+            break
         case V2rayProtocolOutbound.shadowsocks:
             var ss = outbound.settingShadowsocks
             if ss == nil {
@@ -573,6 +712,20 @@ class V2rayConfig: NSObject {
                 return
             }
             break
+        case V2rayProtocolOutbound.trojan.rawValue:
+            if self.serverTrojan.address.count == 0 {
+                self.error = "missing trojan.address";
+                return
+            }
+            if self.serverTrojan.port == 0 {
+                self.error = "missing trojan.port";
+                return
+            }
+            if self.serverTrojan.password.count == 0 {
+                self.error = "missing trojan.password";
+                return
+            }
+            break
         case V2rayProtocolOutbound.socks.rawValue:
             if self.serverSocks5.servers[0].address.count == 0 {
                 self.error = "missing socks.address";
@@ -617,11 +770,19 @@ class V2rayConfig: NSObject {
             outbound.mux = mux
 
             break
+            
+        case V2rayProtocolOutbound.trojan:
+            var trojan = V2rayOutboundTrojan()
+            trojan.servers = [self.serverTrojan]
+            outbound.settingTrojan = trojan
+            break
+        
         case V2rayProtocolOutbound.shadowsocks:
             var ss = V2rayOutboundShadowsocks()
             ss.servers = [self.serverShadowsocks]
             outbound.settingShadowsocks = ss
             break
+        
         case V2rayProtocolOutbound.socks:
             outbound.settingSocks = self.serverSocks5
             break
@@ -849,6 +1010,15 @@ class V2rayConfig: NSObject {
                 v2rayInbound.settingHttp = settings
                 break
 
+            case .trojan:
+                var settings = V2rayInboundTrojan()
+                settings.password = jsonParams["settings"]["password"].stringValue
+                settings.level = jsonParams["settings"]["level"].intValue
+
+                // set into inbound
+                v2rayInbound.settingTrojan = settings
+                break
+                
             case .shadowsocks:
                 var settings = V2rayInboundShadowsocks()
                 settings.email = jsonParams["settings"]["timeout"].stringValue
@@ -1053,7 +1223,26 @@ class V2rayConfig: NSObject {
                 // set into outbound
                 v2rayOutbound.settingShadowsocks = settingShadowsocks
                 break
-
+                
+            case .trojan:
+                var settingTrojan = V2rayOutboundTrojan()
+                var servers: [V2rayOutboundTrojanServer] = []
+                // servers
+                jsonParams["settings"]["servers"].arrayValue.forEach {
+                    val in
+                    var server = V2rayOutboundTrojanServer()
+                    server.address = val["address"].stringValue
+                    server.port = val["port"].intValue
+                    server.password = val["password"].stringValue
+                    server.level = val["level"].intValue
+                    // append
+                    servers.append(server)
+                }
+                settingTrojan.servers = servers
+                // set into outbound
+                v2rayOutbound.settingTrojan = settingTrojan
+                break
+                
             case .socks:
                 var settingSocks = V2rayOutboundSocks()
                 var servers: [V2rayOutboundSockServer] = []
@@ -1135,7 +1324,8 @@ class V2rayConfig: NSObject {
         }
 
         // set main server protocol
-        if !self.foundServerProtocol && [V2rayProtocolOutbound.socks.rawValue, V2rayProtocolOutbound.vmess.rawValue, V2rayProtocolOutbound.shadowsocks.rawValue].contains(v2rayOutbound.protocol.rawValue) {
+        // 添加类型之后一定要在这个地方添加类型
+        if !self.foundServerProtocol && [V2rayProtocolOutbound.socks.rawValue, V2rayProtocolOutbound.vmess.rawValue, V2rayProtocolOutbound.shadowsocks.rawValue, V2rayProtocolOutbound.trojan.rawValue].contains(v2rayOutbound.protocol.rawValue) {
             self.serverProtocol = v2rayOutbound.protocol.rawValue
             self.foundServerProtocol = true
         }
@@ -1146,6 +1336,12 @@ class V2rayConfig: NSObject {
 
         if v2rayOutbound.protocol == V2rayProtocolOutbound.vmess && v2rayOutbound.settingVMess != nil && v2rayOutbound.settingVMess!.vnext.count > 0 {
             self.serverVmess = v2rayOutbound.settingVMess!.vnext[0]
+        }
+        
+        if v2rayOutbound.protocol == V2rayProtocolOutbound.trojan &&
+            v2rayOutbound.settingTrojan != nil &&
+            v2rayOutbound.settingTrojan!.servers.count > 0 {
+            self.serverTrojan = v2rayOutbound.settingTrojan!.servers[0]
         }
 
         if v2rayOutbound.protocol == V2rayProtocolOutbound.shadowsocks && v2rayOutbound.settingShadowsocks != nil && v2rayOutbound.settingShadowsocks!.servers.count > 0 {

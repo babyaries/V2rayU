@@ -13,6 +13,7 @@ import Sparkle
 
 let menuController = (NSApplication.shared.delegate as? AppDelegate)?.statusMenu.delegate as! MenuController
 let V2rayUpdater = SUUpdater()
+let TrojanUpdater = SUUpdater()
 
 extension PreferencePane.Identifier {
     static let generalTab = Identifier("generalTab")
@@ -261,6 +262,7 @@ class MenuController: NSObject, NSMenuDelegate {
             return
         }
 
+        // load server item
         guard let v2ray = V2rayServer.loadSelectedItem() else {
             noticeTip(title: "start v2ray fail", subtitle: "", informativeText: "v2ray config not found")
             setStatusOff()
@@ -280,6 +282,8 @@ class MenuController: NSObject, NSMenuDelegate {
 
         // set status
         setStatusOn(runMode: runMode)
+        
+        
 
         // launch
         V2rayLaunch.Start()
@@ -459,6 +463,11 @@ class MenuController: NSObject, NSMenuDelegate {
         if v2ray != nil && v2ray!.isValid {
             let cfg = V2rayConfig()
             cfg.parseJson(jsonText: v2ray!.json)
+            
+            if cfg.serverProtocol == V2rayProtocolOutbound.trojan.rawValue{
+                
+            }
+            
             sockPort = cfg.socksPort
             httpPort = cfg.httpPort
         }
@@ -522,7 +531,7 @@ class MenuController: NSObject, NSMenuDelegate {
 
     @IBAction func copyExportCommand(_ sender: NSMenuItem) {
         // Get the Http proxy config.
-        let httpPort = UserDefaults.get(forKey: .localHttpPort) ?? "1087"
+        let httpPort = UserDefaults.get(forKey: .localHttpPort) ?? "10809"
 
         // Format an export string.
         let command = "export http_proxy=http://127.0.0.1:\(httpPort);export https_proxy=http://127.0.0.1:\(httpPort);"
@@ -578,7 +587,7 @@ class MenuController: NSObject, NSMenuDelegate {
             // ss://YWVzLTI1Ni1jZmI6ZUlXMERuazY5NDU0ZTZuU3d1c3B2OURtUzIwMXRRMERAMTcyLjEwNS43MS44Mjo4MDk5#翻墙党325.06美国 类型这种含中文的格式不是标准的URL格式
 //            if URL(string: uri) == nil {
             if !ImportUri.supportProtocol(uri: uri) {
-                noticeTip(title: "import server fail", subtitle: "", informativeText: "no found ss:// , ssr:// or vmess://")
+                noticeTip(title: "import server fail", subtitle: "", informativeText: "no found ss:// , ssr:// , vmess:// or trojan://")
                 continue
             }
 
@@ -587,7 +596,7 @@ class MenuController: NSObject, NSMenuDelegate {
                 continue
             }
 
-            noticeTip(title: "import server fail", subtitle: "", informativeText: "no found ss:// , ssr:// or vmess://")
+            noticeTip(title: "import server fail", subtitle: "", informativeText: "no found ss:// , ssr:// or vmess:// or trojan://")
         }
     }
 

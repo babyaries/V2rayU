@@ -43,11 +43,11 @@ final class PreferenceAdvanceViewController: NSViewController, PreferencePane {
         let enableUdpState = UserDefaults.getBool(forKey: .enableUdp)
         let enableSniffingState = UserDefaults.getBool(forKey: .enableSniffing)
 
-        let localSockPort = UserDefaults.get(forKey: .localSockPort) ?? "1080"
+        let localSockPort = UserDefaults.get(forKey: .localSockPort) ?? "10808"
         let localSockHost = UserDefaults.get(forKey: .localSockHost) ?? "127.0.0.1"
-        let localHttpPort = UserDefaults.get(forKey: .localHttpPort) ?? "1087"
+        let localHttpPort = UserDefaults.get(forKey: .localHttpPort) ?? "10809"
         let localHttpHost = UserDefaults.get(forKey: .localHttpHost) ?? "127.0.0.1"
-        let localPacPort = UserDefaults.get(forKey: .localPacPort) ?? "11085"
+        let localPacPort = UserDefaults.get(forKey: .localPacPort) ?? "10810"
         let muxConcurrent = UserDefaults.get(forKey: .muxConcurrent) ?? "8"
 
         // select item

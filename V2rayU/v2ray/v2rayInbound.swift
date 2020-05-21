@@ -10,7 +10,7 @@ import Cocoa
 
 // Inbound
 struct V2rayInbound: Codable {
-    var port: String = "1080"
+    var port: String = "10808"
     var listen: String = "127.0.0.1"
     var `protocol`: V2rayProtocolInbound = .socks
     var tag: String?
@@ -21,6 +21,7 @@ struct V2rayInbound: Codable {
     var settingHttp: V2rayInboundHttp = V2rayInboundHttp()
     var settingSocks: V2rayInboundSocks = V2rayInboundSocks()
     var settingShadowsocks: V2rayInboundShadowsocks?
+    var settingTrojan: V2rayInboundTrojan?
     var settingVMess: V2rayInboundVMess?
 
     enum CodingKeys: String, CodingKey {
@@ -61,6 +62,9 @@ extension V2rayInbound {
         case .shadowsocks:
             settingShadowsocks = try container.decode(V2rayInboundShadowsocks.self, forKey: CodingKeys.settings)
             break
+        case .trojan:
+            settingTrojan = try container.decode(V2rayInboundTrojan.self, forKey: CodingKeys.settings)
+            break
         case .socks:
             settingSocks = try container.decode(V2rayInboundSocks.self, forKey: CodingKeys.settings)
             break
@@ -95,6 +99,9 @@ extension V2rayInbound {
         switch `protocol` {
         case .http:
             try container.encode(self.settingHttp, forKey: .settings)
+            break
+        case .trojan:
+            try container.encode(self.settingTrojan, forKey: .settings)
             break
         case .shadowsocks:
             try container.encode(self.settingShadowsocks, forKey: .settings)
@@ -144,6 +151,11 @@ struct V2rayInboundHttp: Codable {
 struct V2rayInboundHttpAccount: Codable {
     var user: String?
     var pass: String?
+}
+
+struct V2rayInboundTrojan: Codable {
+    var level: Int = 0
+    var password: String?
 }
 
 struct V2rayInboundShadowsocks: Codable {

@@ -25,7 +25,10 @@ extension UserDefaults {
         case v2rayLogLevel
         // v2ray dns json txt
         case v2rayDnsJson
-
+        // trojan version
+        case trojanVersion
+        // current application
+        case currentApplication
         // auth check version
         case autoCheckVersion
         // auto launch after login

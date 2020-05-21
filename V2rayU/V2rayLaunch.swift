@@ -21,7 +21,9 @@ let launchHttpPlistFile = launchAgentDirPath + LAUNCH_HTTP_PLIST
 let AppResourcesPath = Bundle.main.bundlePath + "/Contents/Resources"
 let v2rayCorePath = AppResourcesPath + "/v2ray-core"
 let v2rayCoreFile = v2rayCorePath + "/v2ray"
-var HttpServerPacPort = UserDefaults.get(forKey: .localPacPort) ?? "11085"
+let trojanPath = AppResourcesPath + "/trojan"
+let trojanFile = trojanPath + "/trojan"
+var HttpServerPacPort = UserDefaults.get(forKey: .localPacPort) ?? "10810"
 let cmdSh = AppResourcesPath + "/cmd.sh"
 let cmdAppleScript = "do shell script \"" + cmdSh + "\" with administrator privileges"
 let JsonConfigFilePath = AppResourcesPath + "/config.json"
@@ -44,9 +46,13 @@ class V2rayLaunch: NSObject {
         if !fileMgr.fileExists(atPath: launchAgentDirPath) {
             try! fileMgr.createDirectory(atPath: launchAgentDirPath, withIntermediateDirectories: true, attributes: nil)
         }
-
+        
         // write launch agent
-        let agentArguments = ["./v2ray-core/v2ray", "-config", JsonConfigFilePath]
+        let currentApplication = UserDefaults.get(forKey: .currentApplication) ?? "v2ray"
+        var agentArguments = ["./v2ray-core/v2ray", "-config", JsonConfigFilePath]
+        if "trojan" == currentApplication {
+            agentArguments = ["./trojan/trojan", "--config", JsonConfigFilePath]
+        }
 
         let dictAgent: NSMutableDictionary = [
             "Label": LAUNCH_AGENT_PLIST.replacingOccurrences(of: ".plist", with: ""),
@@ -74,8 +80,14 @@ class V2rayLaunch: NSObject {
     static func Start() {
         // permission: make v2ray execable
         // ~/LaunchAgents/yanue.v2rayu.v2ray-core.plist
-        _ = shell(launchPath: "/bin/bash", arguments: ["-c", "cd " + AppResourcesPath + " && /bin/chmod -R 755 ./v2ray-core"])
-
+        let currentApplication = UserDefaults.get(forKey: .currentApplication) ?? "v2ray"
+        if "trojan" == currentApplication {
+            _ = shell(launchPath: "/bin/bash", arguments: ["-c", "cd " + AppResourcesPath + " && /bin/chmod -R 755 ./v2ray-core"])
+        } else {
+            _ = shell(launchPath: "/bin/bash", arguments: ["-c", "cd " + AppResourcesPath + " && /bin/chmod -R 755 ./trojan"])
+        }
+        self.generateLaunchAgentPlist()
+        
         self.startHttpServer()
 
         // unload first
@@ -173,7 +185,7 @@ class V2rayLaunch: NSObject {
             webServer["/:path"] = shareFilesFromDirectory(AppResourcesPath)
             webServer["/pac/:path"] = shareFilesFromDirectory(AppResourcesPath + "/pac")
 
-            let pacPort = UInt16(UserDefaults.get(forKey: .localPacPort) ?? "11085") ?? 11085
+            let pacPort = UInt16(UserDefaults.get(forKey: .localPacPort) ?? "10810") ?? 10810
             try webServer.start(pacPort)
             print("webServer.start at:\(pacPort)")
         } catch let error {
@@ -187,11 +199,11 @@ class V2rayLaunch: NSObject {
         // stop pac server
         webServer.stop()
 
-        let localSockPort = UserDefaults.get(forKey: .localSockPort) ?? "1080"
+        let localSockPort = UserDefaults.get(forKey: .localSockPort) ?? "10808"
         let localSockHost = UserDefaults.get(forKey: .localSockHost) ?? "127.0.0.1"
-        let localHttpPort = UserDefaults.get(forKey: .localHttpPort) ?? "1087"
+        let localHttpPort = UserDefaults.get(forKey: .localHttpPort) ?? "10809"
         let localHttpHost = UserDefaults.get(forKey: .localHttpHost) ?? "127.0.0.1"
-        let localPacPort = UserDefaults.get(forKey: .localPacPort) ?? "11085"
+        let localPacPort = UserDefaults.get(forKey: .localPacPort) ?? "10810"
 
         // check same port
         if localSockPort == localHttpPort {

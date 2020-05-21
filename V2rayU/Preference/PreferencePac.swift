@@ -141,7 +141,7 @@ final class PreferencePacViewController: NSViewController, PreferencePane {
 func GeneratePACFile(rewrite: Bool) -> Bool {
     let socks5Address = "127.0.0.1"
 
-    let sockPort = UserDefaults.get(forKey: .localSockPort) ?? "1080"
+    let sockPort = UserDefaults.get(forKey: .localSockPort) ?? "10810"
 
     // permission
     _ = shell(launchPath: "/bin/bash", arguments: ["-c", "cd " + AppResourcesPath + " && /bin/chmod -R 755 ./pac"])

@@ -50,8 +50,8 @@
 /* Class = "NSMenuItem"; title = "shadowsocks"; ObjectID = "5a1-ro-mjU"; */
 "5a1-ro-mjU.title" = "shadowsocks";
 
-/* Class = "NSTextField"; ibShadowedToolTip = "vmess:// or ss:// or ssr:// or http:// or file://"; ObjectID = "5cY-nr-cxd"; */
-"5cY-nr-cxd.ibShadowedToolTip" = "vmess:// or ss:// or ssr:// or http:// or file://";
+/* Class = "NSTextField"; ibShadowedToolTip = "trojan:// or vmess:// or ss:// or ssr:// or http:// or file://"; ObjectID = "5cY-nr-cxd"; */
+"5cY-nr-cxd.ibShadowedToolTip" = "trojan:// or vmess:// or ss:// or ssr:// or http:// or file://";
 
 /* Class = "NSTextFieldCell"; title = "uplinkCapacity"; ObjectID = "7Kr-RS-lGn"; */
 "7Kr-RS-lGn.title" = "uplinkCapacity";
@@ -123,7 +123,7 @@
 "MGV-KI-VDQ.title" = "header";
 
 /* Class = "NSTextFieldCell"; placeholderString = "vmess:// or ss:// or ssr:// or http://"; ObjectID = "MHF-nm-HG8"; */
-"MHF-nm-HG8.placeholderString" = "vmess:// or ss:// or ssr:// or http://";
+"MHF-nm-HG8.placeholderString" = "trojan:// or vmess:// or ss:// or ssr:// or http://";
 
 /* Class = "NSMenuItem"; title = "none"; ObjectID = "Mg8-IY-rzv"; */
 "Mg8-IY-rzv.title" = "none";
