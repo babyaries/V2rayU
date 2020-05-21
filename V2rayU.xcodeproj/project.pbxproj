@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1AB4C522247616E40059E185 /* v2ray-core in Resources */ = {isa = PBXBuildFile; fileRef = 1AB4C521247616E40059E185 /* v2ray-core */; };
-		1AB4C5242476317E0059E185 /* trojan in Resources */ = {isa = PBXBuildFile; fileRef = 1AB4C5232476317D0059E185 /* trojan */; };
 		6604E43C21798F2A00E54AE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6604E43B21798F2A00E54AE1 /* AppDelegate.swift */; };
 		6604E447217990CD00E54AE1 /* V2rayULauncher.app in Copy Files */ = {isa = PBXBuildFile; fileRef = 6604E43921798F2900E54AE1 /* V2rayULauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6608D9DA2182C69D00A0E0DD /* v2rayStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6608D9D92182C69D00A0E0DD /* v2rayStruct.swift */; };
@@ -61,6 +60,8 @@
 		6D6DFEA4ED44E1BE02451B6D /* PreferenceAbout.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF5D99F2FBB7B53564B3B /* PreferenceAbout.strings */; };
 		6D6DFFD18860EBE148F6DF1F /* PreferencePac.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DFE89E1A7BFE2AC1D8871 /* PreferencePac.strings */; };
 		9602B2CB24756D9B00CD4C53 /* Trojan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9602B2CA24756D9B00CD4C53 /* Trojan.swift */; };
+		960716532476BE410099A00B /* privoxy in Resources */ = {isa = PBXBuildFile; fileRef = 960716522476BE410099A00B /* privoxy */; };
+		960716552476BE5A0099A00B /* trojan in Resources */ = {isa = PBXBuildFile; fileRef = 960716542476BE5A0099A00B /* trojan */; };
 		F260898E336CFA5EAB07ADC9 /* Pods_V2rayU.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A5CE4521706B5A009B08B2 /* Pods_V2rayU.framework */; };
 /* End PBXBuildFile section */
 
@@ -121,7 +122,6 @@
 
 /* Begin PBXFileReference section */
 		1AB4C521247616E40059E185 /* v2ray-core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "v2ray-core"; path = "Build/v2ray-core"; sourceTree = "<group>"; };
-		1AB4C5232476317D0059E185 /* trojan */ = {isa = PBXFileReference; lastKnownFileType = folder; name = trojan; path = Build/trojan; sourceTree = "<group>"; };
 		230294B5D1C5B1E0D311F3E2 /* libPods-V2rayUTool.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-V2rayUTool.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29B27CD97A6B24986CAF0BFD /* Pods-V2rayU.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-V2rayU.release.xcconfig"; path = "Pods/Target Support Files/Pods-V2rayU/Pods-V2rayU.release.xcconfig"; sourceTree = "<group>"; };
 		6604E43921798F2900E54AE1 /* V2rayULauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = V2rayULauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -222,6 +222,8 @@
 		6D6DFFB29020127E034AD168 /* PreferenceGeneral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceGeneral.swift; sourceTree = "<group>"; };
 		8E15DFCD449143CCC309A1A0 /* Pods-V2rayU.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-V2rayU.debug.xcconfig"; path = "Pods/Target Support Files/Pods-V2rayU/Pods-V2rayU.debug.xcconfig"; sourceTree = "<group>"; };
 		9602B2CA24756D9B00CD4C53 /* Trojan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Trojan.swift; sourceTree = "<group>"; };
+		960716522476BE410099A00B /* privoxy */ = {isa = PBXFileReference; lastKnownFileType = folder; name = privoxy; path = Build/privoxy; sourceTree = "<group>"; };
+		960716542476BE5A0099A00B /* trojan */ = {isa = PBXFileReference; lastKnownFileType = folder; name = trojan; path = Build/trojan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -305,8 +307,9 @@
 			isa = PBXGroup;
 			children = (
 				6683B1EA21C2AD1A004A1C5F /* pac */,
+				960716522476BE410099A00B /* privoxy */,
+				960716542476BE5A0099A00B /* trojan */,
 				1AB4C521247616E40059E185 /* v2ray-core */,
-				1AB4C5232476317D0059E185 /* trojan */,
 				66FEAD44217D75D7009DECF9 /* Build */,
 				664EB373216C9A5E00B6AE0D /* V2rayU */,
 				660C8CA02181CBAA00896361 /* V2rayUTests */,
@@ -585,12 +588,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				960716552476BE5A0099A00B /* trojan in Resources */,
+				960716532476BE410099A00B /* privoxy in Resources */,
 				1AB4C522247616E40059E185 /* v2ray-core in Resources */,
 				667029D321AFB86E0079EF41 /* QrcodeWindow.xib in Resources */,
 				6662C20B240EA782000AF6CD /* PreferenceDns.xib in Resources */,
 				6650AAAD21771E11000909D8 /* unzip.sh in Resources */,
 				6610ECB721742AFD008FC401 /* MainMenu.xib in Resources */,
-				1AB4C5242476317E0059E185 /* trojan in Resources */,
 				66107B8622DEDBE4002FFB60 /* Localizable.strings in Resources */,
 				66F411B521CA8921007AAC10 /* cmd.sh in Resources */,
 				664EB377216C9A5F00B6AE0D /* Assets.xcassets in Resources */,
@@ -850,7 +854,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = LB8U639HY9;
+				DEVELOPMENT_TEAM = YPCGRQR4TD;
 				INFOPLIST_FILE = V2rayULauncher/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -872,7 +876,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = LB8U639HY9;
+				DEVELOPMENT_TEAM = YPCGRQR4TD;
 				INFOPLIST_FILE = V2rayULauncher/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -893,7 +897,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = LB8U639HY9;
+				DEVELOPMENT_TEAM = YPCGRQR4TD;
 				INFOPLIST_FILE = V2rayUTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -915,7 +919,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = LB8U639HY9;
+				DEVELOPMENT_TEAM = YPCGRQR4TD;
 				INFOPLIST_FILE = V2rayUTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1058,13 +1062,13 @@
 			baseConfigurationReference = 8E15DFCD449143CCC309A1A0 /* Pods-V2rayU.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1.5.0;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = LB8U639HY9;
+				DEVELOPMENT_TEAM = YPCGRQR4TD;
 				INFOPLIST_FILE = V2rayU/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1086,13 +1090,13 @@
 			baseConfigurationReference = 29B27CD97A6B24986CAF0BFD /* Pods-V2rayU.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1.5.0;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = LB8U639HY9;
+				DEVELOPMENT_TEAM = YPCGRQR4TD;
 				INFOPLIST_FILE = V2rayU/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1114,7 +1118,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LB8U639HY9;
+				DEVELOPMENT_TEAM = YPCGRQR4TD;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1126,7 +1130,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LB8U639HY9;
+				DEVELOPMENT_TEAM = YPCGRQR4TD;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

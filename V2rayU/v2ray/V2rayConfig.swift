@@ -1473,7 +1473,7 @@ class V2rayConfig: NSObject {
 
             // request
             if steamJson["tcpSettings"]["header"]["request"].dictionaryValue.count > 0 {
-                var requestJson = steamJson["tcpSettings"]["header"]["request"]
+                let requestJson = steamJson["tcpSettings"]["header"]["request"]
                 var tcpRequest = TcpSettingHeaderRequest()
                 tcpRequest.version = requestJson["version"].stringValue
                 tcpRequest.method = requestJson["method"].stringValue
@@ -1503,7 +1503,7 @@ class V2rayConfig: NSObject {
 
             // response
             if steamJson["tcpSettings"]["header"]["response"].dictionaryValue.count > 0 {
-                var responseJson = steamJson["tcpSettings"]["header"]["response"]
+                let responseJson = steamJson["tcpSettings"]["header"]["response"]
                 var tcpResponse = TcpSettingHeaderResponse()
 
                 tcpResponse.version = responseJson["version"].stringValue
@@ -1624,6 +1624,31 @@ class V2rayConfig: NSObject {
         } catch let error {
             // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
             NSLog("save json file fail: \(error)")
+        }
+        
+        
+        guard let privoxyFile = V2rayServer.getPrivoxyFile() else {
+            NSLog("unable get privoxy config file path")
+            return
+        }
+        
+        
+        do {
+            let privoxyFilePath = URL.init(fileURLWithPath: privoxyFile)
+            // delete before config
+            if FileManager.default.fileExists(atPath: privoxyFile) {
+                try? FileManager.default.removeItem(at: privoxyFilePath)
+            }
+            let localHttpPort = UserDefaults.get(forKey: .localHttpPort) ?? "10809"
+            let localSockPort = UserDefaults.get(forKey: .localSockPort) ?? "10808"
+            let startConfigStr = "listen-address 0.0.0.0:" + localHttpPort
+            let logFileStr = "\ntoggle 0\nlogfile " + V2rayServer.getPrivoxyLogFile()
+            let endConfigStr = "\nshow-on-task-bar 0\nactivity-animation 0\nforward-socks5 / 127.0.0.1:"+localSockPort+" .\nmax-client-connections 2048\nhide-console"
+            let configStr = startConfigStr + logFileStr + endConfigStr
+            try configStr.write(to: privoxyFilePath, atomically: true, encoding: String.Encoding.utf8)
+        } catch let error {
+            // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
+            NSLog("save privoxy file fail: \(error)")
         }
     }
 }
