@@ -1,7 +1,17 @@
 # V2rayU
+
+[![GitHub All Releases](https://img.shields.io/github/downloads/kanyways/V2rayU/total?style=flat-square&logo=github)](https://github.com/kanyways/V2rayU/releases)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/kanyways/V2rayU?style=flat-square&logo=github)](https://github.com/kanyways/V2rayU/tags)
+[![GitHub stars](https://img.shields.io/github/stars/kanyways/V2rayU?style=flat-square&logo=github)](https://github.com/kanyways/V2rayU/stargazers)
+[![Project license](https://img.shields.io/github/license/kanyways/V2rayU?style=flat-square&logo=github)](https://github.com/kanyways/V2rayU/blob/master/LICENSE)
+
 ![](https://github.com/yanue/V2rayU/blob/master/V2rayU/Assets.xcassets/AppIcon.appiconset/128.png?raw=true)
 
 V2rayU 是一款v2ray mac客户端,用于科学上网,使用swift4.2编写,基于v2ray项目,支持vmess,shadowsocks,socks5等服务协议(推荐搭建**v2ray服务**,可伪装成正常网站,防封锁), 支持二维码,剪贴板导入,手动配置,二维码分享等, 支持订阅, 项目地址: https://github.com/yanue/V2rayU
+
+### 重要说明
+
+由于fork过来不能发布相同的2.1.0版本，只能自己重新建立一个，具体有什么问题请选择原作者。https://github.com/yanue/V2rayU
 
 ### 主要特性
 ----
