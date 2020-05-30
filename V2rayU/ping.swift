@@ -14,6 +14,7 @@ var fastV2rayName = ""
 var fastV2raySpeed = 5
 let pingJsonFileName = "ping.json"
 let pingJsonFilePath = AppResourcesPath + "/" + pingJsonFileName
+var task:Process?
 
 struct pingItem: Codable {
     var name: String = ""
@@ -54,13 +55,35 @@ class PingSpeed: NSObject {
         }
         menuController.statusMenu.item(withTag: 1)?.title = pingTip
 
+//        let queue = DispatchQueue.global()
+//        let queueInterval = DispatchQueue.global(qos: .userInitiated)
+//        let interval = DispatchWorkItem{
+//            print("ping terminate")
+//            task?.interrupt()
+//            task?.terminate()
+//        }
+        let queue = DispatchQueue(label: "pinger")
 
-        let queue = DispatchQueue.global()
         queue.async {
 
-            self.writeServerToFile()
-            self.pingInCmd()
-            self.parsePingResult()
+//            self.writeServerToFile()
+//            self.pingInCmd()
+//            self.parsePingResult()
+
+//            print("ping finish")
+//            interval.cancel()
+
+            let itemList = V2rayServer.list()
+            if itemList.count == 0 {
+                return
+            }
+
+            for item in itemList {
+                if !item.isValid {
+                    continue
+                }
+                self.pingEachServer(item: item)
+            }
 
             DispatchQueue.main.async {
                 menuController.statusMenu.item(withTag: 1)?.title = "\(normalTitle)"
@@ -74,10 +97,13 @@ class PingSpeed: NSObject {
                     if V2rayServer.getIndex(name: fastV2rayName) > -1 {
                         // set current
                         UserDefaults.set(forKey: .v2rayCurrentServerName, value: fastV2rayName)
-                        // stop first
-                        V2rayLaunch.Stop()
-                        // start
-                        menuController.startV2rayCore()
+                        // if not stop status
+                        if UserDefaults.getBool(forKey: .v2rayTurnOn) {
+                            // stop first
+                            V2rayLaunch.Stop()
+                            // start
+                            menuController.startV2rayCore()
+                        }
                     }
                 }
 
@@ -90,6 +116,31 @@ class PingSpeed: NSObject {
                 inPing = false
             }
         }
+    }
+
+    func pingEachServer(item: V2rayItem) {
+        let host = self.parseHost(item: item)
+        guard let _ = NSURL(string: host) else {
+            print("not host", host)
+            return
+        }
+
+        // Ping once
+        let once = SwiftyPing(host: host, configuration: PingConfiguration(interval: 0.5, with: 5), queue: DispatchQueue.global())
+        once?.observer = { (_, response) in
+            let duration = response.duration
+            if response.error != nil {
+                print("ping error", host, response.error as Any)
+            } else {
+
+            }
+            item.speed = String(format: "%.2f", duration * 1000) + "ms"
+            item.store()
+            // refresh server
+            menuController.showServers()
+            once?.stop()
+        }
+        once?.start()
     }
 
     func writeServerToFile() {
@@ -123,15 +174,15 @@ class PingSpeed: NSObject {
 
     func pingInCmd() {
         let cmd = "cd " + AppResourcesPath + " && chmod +x ./V2rayUHelper && ./V2rayUHelper -cmd ping -t 5s -f ./" + pingJsonFileName
-//        print("cmd", cmd)
-        let res = shell(launchPath: "/bin/bash", arguments: ["-c", cmd])
-        
+        //        print("cmd", cmd)
+        let res = runShell(launchPath: "/bin/bash", arguments: ["-c", cmd])
+
         NSLog("pingInCmd: res=(\(String(describing: res))) cmd=(\(cmd))")
 
-        if res?.contains("ok") ?? false {
+        // 这里直接判断ok有问题，res里面还有lookup
+        if res?.contains("ok config.") ?? false {
             // res is: ok config.xxxx
             fastV2rayName = res!.replacingOccurrences(of: "ok ", with: "")
-            return
         }
     }
 
@@ -189,7 +240,28 @@ class PingSpeed: NSObject {
             host = cfg.serverTrojan.address
             port = cfg.serverTrojan.port
         }
-        
+
         return host
+    }
+
+    func runShell(launchPath: String, arguments: [String]) -> String? {
+        task = Process()
+        task?.launchPath = launchPath
+        task?.arguments = arguments
+
+        let pipe = Pipe()
+        task?.standardOutput = pipe
+        task?.launch()
+
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: String.Encoding.utf8)!
+
+        if output.count > 0 {
+            //remove newline character.
+            let lastIndex = output.index(before: output.endIndex)
+            return String(output[output.startIndex..<lastIndex])
+        }
+
+        return output
     }
 }

@@ -282,8 +282,6 @@ class MenuController: NSObject, NSMenuDelegate {
 
         // set status
         setStatusOn(runMode: runMode)
-        
-        
 
         // launch
         V2rayLaunch.Start()
@@ -406,7 +404,20 @@ class MenuController: NSObject, NSMenuDelegate {
             }
 
             let menuItem: NSMenuItem = NSMenuItem()
-            menuItem.title = (item.speed.count > 0 ? item.speed : "-1ms") + "\t    " + item.remark
+            let ping = item.speed.count > 0 ? item.speed : "-1ms"
+            let totalSpaceCnt = 10
+            var spaceCnt = totalSpaceCnt - ping.count
+            // littleSpace: 1,.
+            if ping.contains(".") || ping.contains("1"){
+                let littleSpaceCount = ping.filter({ $0 == "." }).count + ping.filter({ $0 == "1" }).count
+                spaceCnt = totalSpaceCnt - ((ping.count - littleSpaceCount) + Int((ping.count - littleSpaceCount)/2))
+            }
+            if ping.contains("-1ms") {
+                spaceCnt = 9
+            }
+            let space = String(repeating: " ", count: spaceCnt < 0 ? 0 : spaceCnt) + "　"
+
+            menuItem.title = ping + space + item.remark
             menuItem.action = #selector(self.switchServer(_:))
             menuItem.representedObject = item
             menuItem.target = self
@@ -463,18 +474,14 @@ class MenuController: NSObject, NSMenuDelegate {
         if v2ray != nil && v2ray!.isValid {
             let cfg = V2rayConfig()
             cfg.parseJson(jsonText: v2ray!.json)
-            
-            if cfg.serverProtocol == V2rayProtocolOutbound.trojan.rawValue{
-                
-            }
-            
             sockPort = cfg.socksPort
             httpPort = cfg.httpPort
         }
 
         // set icon
         setStatusOn(runMode: runMode)
-
+        // launch
+        V2rayLaunch.Start()
         // manual mode
         if lastRunMode == RunMode.manual.rawValue {
             // backup first
@@ -485,12 +492,6 @@ class MenuController: NSObject, NSMenuDelegate {
         if runMode == .global {
             V2rayLaunch.setSystemProxy(mode: .global, httpPort: httpPort, sockPort: sockPort)
             return
-        }
-
-        // pac mode
-        if runMode == .pac {
-            // generate pac file
-            _ = GeneratePACFile(rewrite: false)
         }
 
         V2rayLaunch.setSystemProxy(mode: runMode)

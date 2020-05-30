@@ -17,5 +17,4 @@ target 'V2rayU' do
   pod 'MASShortcut'
   pod 'Swifter'
 
-
 end

@@ -167,7 +167,7 @@ function commit() {
 
 function downloadTrojan() {
     echo "正在查询最新版trojan ..."
-    rm -fr v2ray-macos.zip v2ray-core
+    rm -fr trojan-macos.zip trojan
     tag=$(curl --silent "https://api.github.com/repos/trojan-gfw/trojan/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
     echo "trojan version: ${tag}"
     url="https://github.com/trojan-gfw/trojan/releases/download/v${tag}/trojan-${tag}-macos.zip"

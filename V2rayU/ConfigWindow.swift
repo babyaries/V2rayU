@@ -639,7 +639,7 @@ class ConfigWindowController: NSWindowController, NSWindowDelegate, NSTabViewDel
             self.SocksView.isHidden = false
             break;
         default: // vmess
-            self.SocksView.isHidden = true
+            self.VmessView.isHidden = true
             break
         }
     }

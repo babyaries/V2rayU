@@ -164,9 +164,12 @@ class V2rayLaunch: NSObject {
 
     static func Stop() {
         _ = shell(launchPath: "/bin/launchctl", arguments: ["unload", launchHttpPlistFile])
+	
+        // stop pac server
+        webServer.stop()
+        
         _ = shell(launchPath: "/bin/launchctl", arguments: ["remove", "yanue.v2rayu.v2ray-core"])
         _ = shell(launchPath: "/bin/launchctl", arguments: ["remove", "yanue.v2rayu.http.plist"])
-        
         self.stopPrivoxyServer()
 
         // cmd: /bin/launchctl unload /Library/LaunchAgents/yanue.v2rayu.v2ray-core.plist
@@ -296,9 +299,6 @@ class V2rayLaunch: NSObject {
             return false
         }
 
-        // restart pac http server
-        startHttpServer()
-
         return true
     }
 
@@ -306,7 +306,7 @@ class V2rayLaunch: NSObject {
         // shell("/bin/bash",["-c","cd ~ && ls -la"])
         let cmd = "cd " + AppResourcesPath + " && chmod +x ./V2rayUHelper && ./V2rayUHelper -cmd port -h " + host + " -p " + port
         let res = shell(launchPath: "/bin/bash", arguments: ["-c", cmd])
-        
+
         NSLog("checkPort: res=(\(String(describing: res))) cmd=(\(cmd))")
 
         if res != "ok" {

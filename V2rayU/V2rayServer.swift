@@ -229,18 +229,6 @@ class V2rayServer: NSObject {
 //        return Bundle.main.url(forResource: "unzip", withExtension: "sh")?.path.replacingOccurrences(of: "/unzip.sh", with: "/config.json")
         return JsonConfigFilePath
     }
-    
-    // get privoxy file url
-    static func getPrivoxyFile() -> String? {
-        return PrivoxyConfigFilePath
-    }
-    
-    // get log file url
-    static func getPrivoxyLogFile() -> String {
-        return PrivoxyLogFilePath
-    }
-    
-    
 
     // load json file data
     static func loadV2rayItem(idx: Int) -> V2rayItem? {

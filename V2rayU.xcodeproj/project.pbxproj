@@ -62,6 +62,7 @@
 		9602B2CB24756D9B00CD4C53 /* Trojan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9602B2CA24756D9B00CD4C53 /* Trojan.swift */; };
 		960716532476BE410099A00B /* privoxy in Resources */ = {isa = PBXBuildFile; fileRef = 960716522476BE410099A00B /* privoxy */; };
 		960716552476BE5A0099A00B /* trojan in Resources */ = {isa = PBXBuildFile; fileRef = 960716542476BE5A0099A00B /* trojan */; };
+		964BC15F2481CE1900EF7215 /* SwiftyPing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964BC15E2481CE1900EF7215 /* SwiftyPing.swift */; };
 		F260898E336CFA5EAB07ADC9 /* Pods_V2rayU.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A5CE4521706B5A009B08B2 /* Pods_V2rayU.framework */; };
 /* End PBXBuildFile section */
 
@@ -224,6 +225,7 @@
 		9602B2CA24756D9B00CD4C53 /* Trojan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Trojan.swift; sourceTree = "<group>"; };
 		960716522476BE410099A00B /* privoxy */ = {isa = PBXFileReference; lastKnownFileType = folder; name = privoxy; path = Build/privoxy; sourceTree = "<group>"; };
 		960716542476BE5A0099A00B /* trojan */ = {isa = PBXFileReference; lastKnownFileType = folder; name = trojan; path = Build/trojan; sourceTree = "<group>"; };
+		964BC15E2481CE1900EF7215 /* SwiftyPing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyPing.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -336,6 +338,7 @@
 		664EB373216C9A5E00B6AE0D /* V2rayU */ = {
 			isa = PBXGroup;
 			children = (
+				964BC15E2481CE1900EF7215 /* SwiftyPing.swift */,
 				66F07CF8236D79540088A4AE /* ping.swift */,
 				66F411B421CA8921007AAC10 /* cmd.sh */,
 				6608D9B82182BBAC00A0E0DD /* v2ray */,
@@ -689,6 +692,7 @@
 				6618372923E9BF1A000F7410 /* ToastWindow.swift in Sources */,
 				66193A7C23EC5F1500289B6A /* Shortcut.m in Sources */,
 				6608D9DA2182C69D00A0E0DD /* v2rayStruct.swift in Sources */,
+				964BC15F2481CE1900EF7215 /* SwiftyPing.swift in Sources */,
 				66F07CF9236D79540088A4AE /* ping.swift in Sources */,
 				664EB392216CA9E800B6AE0D /* ConfigWindow.swift in Sources */,
 				66784B0021704E1300AD307F /* V2rayCore.swift in Sources */,
